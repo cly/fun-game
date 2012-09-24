@@ -22,6 +22,7 @@ var CLIENT_JS_FILES = [
           , 'templates'
           , 'jquery.imagesloaded'
           , 'jquery.autogrow'
+          , 'betable-browser-sdk'
         ]
       , ext: '.js'
     }
