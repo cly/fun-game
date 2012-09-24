@@ -46,7 +46,7 @@ Module.prototype.betableOAUTHCallback = function (req, res, next) {
     
     Betable.token(code, function (e, accessToken) {
         if (e) {
-            return res.send({error: error}, 400);
+            return res.send({error: e}, 400);
         }
 
         req.session.accessToken = accessToken;
@@ -57,15 +57,19 @@ Module.prototype.betableOAUTHCallback = function (req, res, next) {
 Module.prototype.layout = function (req, res, next) {
     // TODO: This should be an attribute of an user object.
     if (!req.session.accessToken) {
+        // Go to oauth flow.
         req.session.state = Math.floor(Math.random() * 1100000000000).toString();
         return Betable.authorize(res, req.session.state);
+    } else {
+        // Have oauth token!
+        LayoutLocalService.getLayout(req, function (e, d) {
+            if (e) {
+                return res.send({error: e}, 400);
+            } else {
+                return res.send(d);
+            }
+        });
     }
-
-    Betable.get(['account', 'wallet'], req.session.accessToken, function (e, d) {
-        console.log(arguments);
-    });
-
-    return res.send(LayoutLocalService.toHTML(req));
 };
 
 Module.prototype.readListRoutes = function (req, res, next) {

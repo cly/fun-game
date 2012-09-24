@@ -6,11 +6,13 @@ var _ = require('underscore')
   , BasicUser = require('user/model/BasicUser')
   , BaseTemplateLocalService = require('core/service/BaseTemplateLocalService')
   , DeployLocalService = require('core/service/DeployLocalService')
+  , Betable = require('betable-oauth-node-sdk')(config.getBetableOAUTHSettings())
 ;
 
 // Private
 //----------------------------------------------------------------------------------------------------------------------
 var _templateFileName = path.join(__dirname, '../template/layout.html');
+var BETABLE_USER_FIELDS = ['account', 'wallet'];
 
 // Constructor
 //----------------------------------------------------------------------------------------------------------------------
@@ -21,27 +23,27 @@ util.inherits(Module, BaseTemplateLocalService);
 
 // Prototype
 //----------------------------------------------------------------------------------------------------------------------
+Module.prototype.getLayout = function (req, cb) {
+    var self = this;
+    Betable.get(BETABLE_USER_FIELDS, req.session.accessToken, function (e, d) {
+        if (e) {
+            return cb(e);
+        } else {
+            var clientSession = self.toClientSession(d);
 
-Module.prototype.toClientSession = function (session) {
+            var params = {
+                config: config
+              , clientJSFileNames: DeployLocalService.getClientJSFileNames()
+              , clientSession: JSON.stringify(clientSession)
+            };
+            return cb(null, self.template(params));
+        }
+    });
+};
+
+Module.prototype.toClientSession = function (betableUser) {
     var result = {};
-    result.user = {};
-    if (session.user) {
-        // Logged in.
-        //var user = BasicUser.fromServerSessionUser(session.user);
-        //
-        // result.user = user.toClientSessionUser();
-        result.user = session.user.toClientSessionUser();
-    } else if (session.auth && session.auth.facebook && session.auth.facebook.user) {
-        // Must be new user from facebook.
-        var original = session.auth.facebook.user;
-        result.user.isNewUser = true;
-        result.user.isUsernameValid = true;
-        result.user.email = original.email;
-        result.user.firstName = original.first_name;
-        result.user.lastName = original.last_name;
-        result.user.username = original.username;
-        result.user.gender = original.gender;
-    }
+    result.betableUser = betableUser;
     return result;
 };
 
@@ -51,7 +53,7 @@ Module.prototype.toHTML = function (req) {
     var params = {
         config: config
       , clientJSFileNames: DeployLocalService.getClientJSFileNames()
-      , clientSession: JSON.stringify(clientSession)
+      , clientSession: {}
     };
     return this.template(params);
 };
