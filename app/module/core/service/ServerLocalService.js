@@ -117,9 +117,8 @@ Module.prototype.startServer = function (cb) {
     this.server.use(express.bodyParser());
     this.server.use(express.cookieParser());
     this.server.use(express.session({
-        store: new RedisStore()
-      , key: 'sid'
-      , secret: 'weriu8374234'
+        key: 'sid'
+      , secret: 'weriu837423423'
     }));
 
     // Convert session user to an user object

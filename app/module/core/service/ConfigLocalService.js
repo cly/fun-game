@@ -11,10 +11,15 @@ var _configs = {};
 _configs.base = {
     'api.version': 1
   , 'api.version.rootUrl': 'derived'
+  , 'betable.gameId': 'F8LGgpw1nequm_vl_d8hAf'
+  , 'betable.APIKey': 'mgqZ3FYtujUvSIfN9KJgjWbyqHbz7tRD'
+  , 'betable.APISecret': 'BnZirQPYesyaxTOwlmrEZ2iaV1iupLHt'
+  , 'betable.OAUTHRedirectPath': 'oauth2.0-redirect/betable'
   , 'exitCode': 100
   , 'facebook.appId': '313282792072364'
   , 'facebook.appSecret': 'dc13911f280ffbd94c1ad68b519941b7'
   , 'facebook.OAuthCallback': 'http://somehost/auth/facebook/callback'
+  , 'hostName': 'http://ec2-204-236-159-159.us-west-1.compute.amazonaws.com'
   , 'process.env.NODE_ENV': 'development'
   , 'process.env.NODE_PATH': 'derived'
   , 'server.port': 8080
@@ -99,10 +104,24 @@ Module.prototype.getApiUrl = function () {
 };
 
 Module.prototype.getCwd = function () {return this._config.cwd;};
+Module.prototype.getBetableGameId = function () {return this._config.betable.gameId;};
+Module.prototype.getBetableAPIKey = function () {return this._config.betable.APIKey;};
+Module.prototype.getBetableAPISecret = function () {return this._config.betable.APISecret;};
+Module.prototype.getBetableOAUTHRedirectURI = function () {
+    return this.getHostName() + this.getApiUrl(this._config.betable.OAUTHRedirectPath);
+};
+Module.prototype.getBetableOAUTHSettings = function () {
+    return {
+        apiKey: this.getBetableAPIKey()
+      , apiSecret: this.getBetableAPISecret()
+      , redirectUri: this.getBetableOAUTHRedirectURI()
+    };
+};
 Module.prototype.getFacebookAppId = function () {return this._config.facebook.appId;};
 Module.prototype.getFacebookAppSecret = function () {return this._config.facebook.appSecret;};
 Module.prototype.getFacebookOAuthCallback = function () {return this._config.facebook.OAuthCallback;};
 Module.prototype.getGuestUserId = function () {return this._config.guest.user.id;};
+Module.prototype.getHostName = function () {return this._config.hostName;};
 Module.prototype.getProcessEnv = function () {return this._config.process.env;};
 Module.prototype.getExitCode = function () {return this._config.exitCode;};
 Module.prototype.getModulePath = function () {return this._config.module.path;};
