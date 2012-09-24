@@ -117,7 +117,8 @@ Module.prototype.startServer = function (cb) {
     this.server.use(express.bodyParser());
     this.server.use(express.cookieParser());
     this.server.use(express.session({
-        key: 'sid'
+        store: new RedisStore()        
+      , key: 'sid'
       , secret: 'weriu837423423'
     }));
 
