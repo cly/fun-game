@@ -1,0 +1,122 @@
+var _ = require('underscore')
+  , path = require('path')
+  , util = require('util')
+;
+
+// Private
+//----------------------------------------------------------------------------------------------------------------------
+
+// Use 'derived' to denote keys that are derived which are processed in this.init.
+var _configs = {};
+_configs.base = {
+    'api.version': 1
+  , 'api.version.rootUrl': 'derived'
+  , 'exitCode': 100
+  , 'facebook.appId': '313282792072364'
+  , 'facebook.appSecret': 'dc13911f280ffbd94c1ad68b519941b7'
+  , 'facebook.OAuthCallback': 'http://somehost/auth/facebook/callback'
+  , 'process.env.NODE_ENV': 'development'
+  , 'process.env.NODE_PATH': 'derived'
+  , 'server.port': 8080
+  , 'mongo.host': '127.0.0.1'
+  , 'mongo.port': 27017
+  , 'module.relativePath': 'app/module'
+  , 'module.path': 'derived'
+};
+
+_configs.production = {
+    'cwd': '/betable/fun-game'
+  , 'process.env.NODE_ENV': 'production'
+  , 'server.port': 80
+};
+
+_configs.development = {
+    'process.env.NODE_ENV': 'development'
+};
+
+_configs.charlie = {
+    'cwd': '/betable/fun-game'
+  , 'guest.user.id': 'charlie.liang.yuan'
+};
+
+var _toPrettyJSON = function (temp) {
+    var config = {};
+    _(temp).each(function (value, key) {
+        var fields = key.split('.');
+
+        // Construct JSON structure.
+        var ref = config;
+        var field;
+        for (var i = 0, ii = fields.length - 1; i < ii; ++i) {
+            field = fields[i];
+            ref[field] || (ref[field] = {});
+            ref = ref[field];
+        }
+
+        // Add field value.
+        ref[fields[i]] = value;
+    });
+    return config;
+};
+
+// Constructor
+//----------------------------------------------------------------------------------------------------------------------
+var Module = function () {
+};
+
+// Prototype
+//----------------------------------------------------------------------------------------------------------------------
+Module.prototype.init = function (configName) {
+    if (_.isUndefined(configName)) {
+        console.log('configName is undefined');
+        console.log((new Error()).stack);
+        process.exit();
+    }
+
+    if (_.isUndefined(_configs[configName]) || configName === 'base') {
+        console.log('configName is invalid');
+        console.log((new Error()).stack);
+        process.exit();
+    } else if (configName === 'development' || configName === 'staging' || configName == 'production') {
+        // Normal settings.
+        this._config = _toPrettyJSON(_.extend(_configs.base, _configs[configName]));
+    } else {
+        // Custom development settings.
+        this._config = _toPrettyJSON(_.extend(_.extend(_configs.base, _configs.development), _configs[configName]));
+    }
+
+    // Derived parameters.
+    this._config.api.rootUrl = '/api/' + this._config.api.version + '/';
+    this._config.process.env.NODE_PATH = [this._config.cwd + '/app', this._config.cwd + '/app/module'].join(':');
+    this._config.module.path = this._config.cwd + '/app/module';
+    return this;
+};
+
+Module.prototype.getApiUrl = function () {
+    var args = Array.prototype.slice.apply(arguments);
+    args.unshift(this._config.api.rootUrl);
+    return path.join.apply(this, args);
+};
+
+Module.prototype.getCwd = function () {return this._config.cwd;};
+Module.prototype.getFacebookAppId = function () {return this._config.facebook.appId;};
+Module.prototype.getFacebookAppSecret = function () {return this._config.facebook.appSecret;};
+Module.prototype.getFacebookOAuthCallback = function () {return this._config.facebook.OAuthCallback;};
+Module.prototype.getGuestUserId = function () {return this._config.guest.user.id;};
+Module.prototype.getProcessEnv = function () {return this._config.process.env;};
+Module.prototype.getExitCode = function () {return this._config.exitCode;};
+Module.prototype.getModulePath = function () {return this._config.module.path;};
+Module.prototype.getMongoHost = function () {return this._config.mongo.host;};
+Module.prototype.getMongoPort = function () {return this._config.mongo.port;};
+Module.prototype.getPath = function () {
+    var args = Array.prototype.slice.apply(arguments);
+    args.unshift(this.getCwd());
+    return path.join.apply(this, args);
+};
+Module.prototype.getServerPort = function () {return this._config.server.port;};
+Module.prototype.isDevelopment = function () {return this._config.process.env.NODE_ENV === 'development';};
+Module.prototype.isProduction = function () {return this._config.process.env.NODE_ENV === 'production';};
+Module.prototype.toString = function () {return util.inspect(this._config, false, null);};
+
+var instance = new Module();
+module.exports = instance;

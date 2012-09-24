@@ -1,0 +1,39 @@
+{
+    "name" : "fun-game"
+  , "description" : "A game using betable's apis."
+  , "version" : "0.0.1"
+  , "homepage" : "http://ec2-50-18-128-44.us-west-1.compute.amazonaws.com/"
+  , "author" : "Charlie Yuan <charlie.liang.yuan@gmail.com>"
+  , "repository" : {
+        "type" : "git"
+      , "url" : "https://github.com/cly/fun-game"
+    }
+  , "dependencies" : {
+        "async" : "0.1.18"
+      , "betable-oauth-node-sdk" : "git://github.com/betable/betable-oauth-node-sdk.git#master"
+      , "connect" : "2.4.4"
+      , "connect-auth" : "0.5.3"
+      , "connect-redis" : "1.4.3"
+      , "express" : "3.0"
+      , "less" : "1.3.0"
+      , "log4js" : "0.4.1"
+      , "mocha" : "0.14.x"
+      , "mongodb" : "0.9.9-8"
+      , "nock" : "0.13.x"
+      , "request" : "2.9.202"
+      , "should" : "0.6.x"
+      , "uglify-js" : "1.3.2"
+      , "underscore" : "1.3.1"
+      , "vows" : "0.6.1"
+    }
+  , "devDependencies" : {}
+  , "engines" : {
+        "node" : "0.8.9"
+      , "npm" : "1.1.61"
+    }
+  , "scripts" : {
+        "test" : "./test/run.sh"
+      , "prepublish" : "make doc"
+      , "dumpconf": "env | grep npm | sort | uniq"
+    }
+}
