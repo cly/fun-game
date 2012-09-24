@@ -63,7 +63,7 @@ Module.prototype.devStatic = function (req, res, next) {
 
 Module.prototype.startServer = function (cb) {
     var self = this;
-    this.server = express.createServer();
+    this.server = express();
 
     if (config.isDevelopment()) {
         this.server.use(_(this.devStatic).bind(this));

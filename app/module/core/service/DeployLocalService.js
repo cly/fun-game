@@ -62,18 +62,8 @@ var CLIENT_JS_FILES = [
 
 var TEMPLATE_FILES = [
     {
-        path: 'app/module/company/template'
-      , fileNames: ['company']
-      , ext: '.html'
-    }
-  , {
         path: 'app/module/user/template'
       , fileNames: ['user']
-      , ext: '.html'
-    }
-  , {
-        path: 'app/module/layout/template'
-      , fileNames: ['misc']
       , ext: '.html'
     }
 ];

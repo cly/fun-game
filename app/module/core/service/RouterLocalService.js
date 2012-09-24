@@ -33,7 +33,7 @@ Module.prototype.attachRoutes = function () {
 Module.prototype.toJSON = function () {
     if (this.server) {
         var output = [];
-        var routes = this.server.routes.routes;
+        var routes = this.server.routes;
         _([routes.get, routes.post, routes.put, routes.delete]).each(function (method, i) {
             _(method).each(function (route, i) {
                 output.push((route.method + '    ').substring(0, 7) + route.path);
