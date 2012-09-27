@@ -21,7 +21,6 @@ var Module = function () {
 //----------------------------------------------------------------------------------------------------------------------
 Module.prototype._contextWrap = function (jsContent) {
     return '(function (app) {\n\n' + jsContent + '\n\n})(__APP);';
-
 };
 
 Module.prototype._logRequest = function (req, res, next) {
@@ -75,11 +74,7 @@ Module.prototype.startServer = function (cb) {
     this.server.use(_(this._logRequest).bind(this));
     this.server.use(express.bodyParser());
     this.server.use(express.cookieParser());
-    this.server.use(express.session({
-        store: new RedisStore()        
-      , key: 'sid'
-      , secret: 'weriu837423423'
-    }));
+    this.server.use(express.session(config.getSessionConfig(new RedisStore())));
 
     // Convert session user to an user object
     this.server.use(function (req, res, next) {

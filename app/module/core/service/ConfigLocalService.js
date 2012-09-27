@@ -83,6 +83,8 @@ _configs.base = {
         'user/service/UserService'
       , 'layout/service/LayoutService'
     ]
+  , 'session.key': 'sid'
+  , 'session.secret': 'asdfwerwer'
   , 'mongo.host': '127.0.0.1'
   , 'mongo.port': 27017
   , 'module.relativePath': 'app/module'
@@ -196,6 +198,13 @@ Module.prototype.getPath = function () {
 };
 Module.prototype.getServerPort = function () {return this._config.server.port;};
 Module.prototype.getServerRoutes = function () {return this._config.server.routes.fileNames;};
+Module.prototype.getSessionConfig = function (store) {
+    return {
+        store: store
+      , key: this._config.session.key
+      , secret: this._config.session.secret
+    };
+};
 Module.prototype.isDevelopment = function () {return this._config.process.env.NODE_ENV === 'development';};
 Module.prototype.isProduction = function () {return this._config.process.env.NODE_ENV === 'production';};
 Module.prototype.toString = function () {return util.inspect(this._config, false, null);};
