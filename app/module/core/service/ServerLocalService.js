@@ -1,7 +1,5 @@
 var _ = require('underscore')
   , connect = require('connect')
-  , connectAuth = require('connect-auth')
-  , everyauth = require('everyauth')
   , express = require('express')
   , log4js = require('log4js')
   , RedisStore = require('connect-redis')(connect)
@@ -73,45 +71,6 @@ Module.prototype.startServer = function (cb) {
         this.server.use(express.basicAuth('betable', 'charlie'));
     }
 
-    everyauth.facebook
-    .appId(config.getFacebookAppId())
-    .appSecret(config.getFacebookAppSecret())
-    .entryPath('/auth/facebook')
-    .callbackPath('/auth/facebook/callback')
-    .scope('email')
-    .handleAuthCallbackError(function (req, res) {
-        req.logout();
-        console.log('auth failed');
-    })
-    .findOrCreateUser(function (session, accessToken, extra, oauthUser) {
-        // Do a look up by fb user;
-        var promise = this.Promise();
-        var facebookId = oauthUser.id;
-        UserLocalService.getByFacebookId(facebookId, function (e, user) {
-            if (e) {
-                promise.fulfill(oauthUser);
-            } else if (!user) {
-                promise.fulfill(oauthUser);
-            } else {
-                session.user = user.toServerSessionUser();
-                promise.fulfill(user);
-            }
-        });
-        return promise;
-    })
-    .redirectPath('/')
-    .sendResponse(function (res) {
-        // This library is fucking annoying.
-        var redirectTo = this._redirectPath;
-        /*
-        if (!redirectTo)
-            throw new Error('You must configure a redirectPath');
-        console.log(redirectTo);
-        this.redirect(res, redirectTo);
-        */
-        res.redirect(redirectTo);
-    });
-
     this.server.use(express.static(config.getCwd() + '/public'));
     this.server.use(_(this._logRequest).bind(this));
     this.server.use(express.bodyParser());
@@ -137,17 +96,6 @@ Module.prototype.startServer = function (cb) {
         next();
     });
 
-    this.server.use(everyauth.middleware());
-    /*
-    this.server.use(connectAuth([
-        connectAuth.Facebook({
-            appId: config.getFacebookAppId()
-          , appSecret: config.getFacebookAppSecret()
-          , scope: 'email'
-          , callback : config.getFacebookOAuthCallback()
-        })
-    ]));
-    */
     this.server.use(this.server.router);
 
     RouterLocalService.init({server: this.server});

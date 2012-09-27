@@ -25,11 +25,14 @@ util.inherits(Module, BaseTemplateLocalService);
 //----------------------------------------------------------------------------------------------------------------------
 Module.prototype.getLayout = function (req, cb) {
     var self = this;
-    Betable.get(BETABLE_USER_FIELDS, req.session.accessToken, function (e, d) {
+    if (!req.session || !req.session.accessToken) {
+        return cb('no betable access token');
+    }
+    Betable.get(BETABLE_USER_FIELDS, req.session.accessToken, function (e, betableUser) {
         if (e) {
             return cb(e);
         } else {
-            var clientSession = self.toClientSession(d);
+            var clientSession = self.toClientSession(betableUser, req.session.accessToken);
 
             var params = {
                 config: config
@@ -41,21 +44,11 @@ Module.prototype.getLayout = function (req, cb) {
     });
 };
 
-Module.prototype.toClientSession = function (betableUser) {
+Module.prototype.toClientSession = function (betableUser, betableAccessToken) {
     var result = {};
+    betableUser.accessToken = betableAccessToken;
     result.betableUser = betableUser;
     return result;
-};
-
-Module.prototype.toHTML = function (req) {
-    var clientSession = this.toClientSession(req.session);
-
-    var params = {
-        config: config
-      , clientJSFileNames: DeployLocalService.getClientJSFileNames()
-      , clientSession: {}
-    };
-    return this.template(params);
 };
 
 var instance = new Module();
