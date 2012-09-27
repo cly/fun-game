@@ -5,14 +5,14 @@ var _ = require('underscore')
 // Constructor
 //----------------------------------------------------------------------------------------------------------------------
 var Module = function (templateFileName) {
-    this.templateFileName = templateFileName;
-    this.template = _.template(fs.readFileSync(this.templateFileName, 'utf8'));
+    this._templateFileName = templateFileName;
+    this._template = _.template(fs.readFileSync(this._templateFileName, 'utf8'));
 };
 
 // Prototype
 //----------------------------------------------------------------------------------------------------------------------
-Module.prototype.getTemplate = function () {
-    return this.template;
+Module.prototype.renderTemplate = function (data) {
+    return this._template(data);
 };
 
 module.exports = Module;

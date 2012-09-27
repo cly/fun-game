@@ -39,7 +39,7 @@ Module.prototype.getLayout = function (req, cb) {
               , clientJSFileNames: DeployLocalService.getClientJSFileNames()
               , clientSession: JSON.stringify(clientSession)
             };
-            return cb(null, self.template(params));
+            return cb(null, self.renderTemplate(params));
         }
     });
 };

@@ -15,6 +15,62 @@ _configs.base = {
   , 'betable.APIKey': 'mgqZ3FYtujUvSIfN9KJgjWbyqHbz7tRD'
   , 'betable.APISecret': 'BnZirQPYesyaxTOwlmrEZ2iaV1iupLHt'
   , 'betable.OAUTHRedirectPath': 'oauth2.0-redirect/betable'
+  , 'client.js.fileNames': [
+        {
+            path: 'public/js/'
+          , fileNames: [
+                'json2'
+              , 'plugins'
+              , 'underscore'
+              , 'backbone'
+              , 'templates'
+              , 'jquery.imagesloaded'
+              , 'jquery.autogrow'
+              , 'betable-browser-sdk'
+            ]
+          , ext: '.js'
+        }
+      , {
+            path: 'app/module/bootstrap/js'
+          , fileNames: [
+    //            'bootstrap-transition'
+    //          , 'bootstrap-alert'
+                'bootstrap-modal'
+    //          , 'bootstrap-dropdown'
+    //          , 'bootstrap-scrollspy'
+    //          , 'bootstrap-tab'
+    //          , 'bootstrap-tooltip'
+    //          , 'bootstrap-popover'
+    //          , 'bootstrap-button'
+    //          , 'bootstrap-collapse'
+    //          , 'bootstrap-carousel'
+    //          , 'bootstrap-typeahead'
+            ]
+          , ext: '.js'
+        }
+      , {
+            path: 'app/module/layout/client'
+          , fileNames: ['start', 'MiscModel', 'MiscView', 'LayoutView', 'BasePage']
+          , ext: '.js'
+        }
+      , {
+            path: 'app/module/user/client'
+          , fileNames: ['UserRouter', 'UserModel', 'UserView']
+          , ext: '.js'
+        }
+      , {
+            path: 'app/module/layout/client'
+          , fileNames: ['end']
+          , ext: '.js'
+        }
+    ]
+  , 'client.template.fileNames': [
+        { 
+            path: 'app/module/user/template' 
+          , fileNames: ['user'] 
+          , ext: '.html' 
+        } 
+    ] 
   , 'exitCode': 100
   , 'facebook.appId': '313282792072364'
   , 'facebook.appSecret': 'dc13911f280ffbd94c1ad68b519941b7'
@@ -23,6 +79,10 @@ _configs.base = {
   , 'process.env.NODE_ENV': 'development'
   , 'process.env.NODE_PATH': 'derived'
   , 'server.port': 8080
+  , 'server.routes.fileNames': [ 
+        'user/service/UserService'
+      , 'layout/service/LayoutService'
+    ]
   , 'mongo.host': '127.0.0.1'
   , 'mongo.port': 27017
   , 'module.relativePath': 'app/module'
@@ -104,6 +164,8 @@ Module.prototype.getApiUrl = function () {
 };
 
 Module.prototype.getCwd = function () {return this._config.cwd;};
+Module.prototype.getClientJSFileNames = function () {return this._config.client.js.fileNames;};
+Module.prototype.getClientTemplateFileNames = function () {return this._config.client.template.fileNames;};
 Module.prototype.getBetableGameId = function () {return this._config.betable.gameId;};
 Module.prototype.getBetableAPIKey = function () {return this._config.betable.APIKey;};
 Module.prototype.getBetableAPISecret = function () {return this._config.betable.APISecret;};
@@ -133,6 +195,7 @@ Module.prototype.getPath = function () {
     return path.join.apply(this, args);
 };
 Module.prototype.getServerPort = function () {return this._config.server.port;};
+Module.prototype.getServerRoutes = function () {return this._config.server.routes.fileNames;};
 Module.prototype.isDevelopment = function () {return this._config.process.env.NODE_ENV === 'development';};
 Module.prototype.isProduction = function () {return this._config.process.env.NODE_ENV === 'production';};
 Module.prototype.toString = function () {return util.inspect(this._config, false, null);};

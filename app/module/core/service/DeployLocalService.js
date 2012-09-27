@@ -9,66 +9,6 @@ var _ = require('underscore')
   , config = app.getConfig()
 ;
 
-// Constants
-//----------------------------------------------------------------------------------------------------------------------
-var CLIENT_JS_FILES = [
-    {
-        path: 'public/js/'
-      , fileNames: [
-            'json2'
-          , 'plugins'
-          , 'underscore'
-          , 'backbone'
-          , 'templates'
-          , 'jquery.imagesloaded'
-          , 'jquery.autogrow'
-          , 'betable-browser-sdk'
-        ]
-      , ext: '.js'
-    }
-  , {
-        path: 'app/module/bootstrap/js'
-      , fileNames: [
-//            'bootstrap-transition'
-//          , 'bootstrap-alert'
-            'bootstrap-modal'
-//          , 'bootstrap-dropdown'
-//          , 'bootstrap-scrollspy'
-//          , 'bootstrap-tab'
-//          , 'bootstrap-tooltip'
-//          , 'bootstrap-popover'
-//          , 'bootstrap-button'
-//          , 'bootstrap-collapse'
-//          , 'bootstrap-carousel'
-//          , 'bootstrap-typeahead'
-        ]
-      , ext: '.js'
-    }
-  , {
-        path: 'app/module/layout/client'
-      , fileNames: ['start', 'MiscModel', 'MiscView', 'LayoutView', 'BasePage']
-      , ext: '.js'
-    }
-  , {
-        path: 'app/module/user/client'
-      , fileNames: ['UserRouter', 'UserModel', 'UserView']
-      , ext: '.js'
-    }
-  , {
-        path: 'app/module/layout/client'
-      , fileNames: ['end']
-      , ext: '.js'
-    }
-];
-
-var TEMPLATE_FILES = [
-    {
-        path: 'app/module/user/template'
-      , fileNames: ['user']
-      , ext: '.html'
-    }
-];
-
 // Constructor
 //----------------------------------------------------------------------------------------------------------------------
 var Module = function () {
@@ -125,7 +65,7 @@ Module.prototype.genCSS = function (cb) {
 };
 
 Module.prototype.getClientJSFileNames = function () {
-    return this._getFileNames(CLIENT_JS_FILES);
+    return this._getFileNames(config.getClientJSFileNames());
 };
 
 Module.prototype.getClientJSFiles = function () {
@@ -139,7 +79,7 @@ Module.prototype.getClientJSFiles = function () {
 };
 
 Module.prototype.getTemplateFileNames = function () {
-    return this._getFileNames(TEMPLATE_FILES);
+    return this._getFileNames(config.getClientTemplateFileNames());
 };
 
 Module.prototype.getTemplates = function () {

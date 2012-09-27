@@ -1,4 +1,6 @@
 var _ = require('underscore')
+  , app = require('')
+  , config = app.getConfig()
 ;
 
 // Constructor
@@ -18,11 +20,7 @@ Module.prototype._notFound = function (req, res, next) {
 
 Module.prototype.attachRoutes = function () {
     var self = this;
-    var serviceFileNames = [
-        'user/service/UserService'
-      , 'layout/service/LayoutService'
-    ];
-
+    var serviceFileNames = config.getServerRoutes();
     _(serviceFileNames).each(function (serviceFileName) {
         var service = require(serviceFileName);
         service.init({server: self.server});
