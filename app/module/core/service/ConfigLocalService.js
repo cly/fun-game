@@ -119,6 +119,61 @@ _configs.development = {
 _configs.charlie = {
     'cwd': '/betable/fun-game'
   , 'guest.user.id': 'charlie.liang.yuan'
+  , 'client.js.fileNames': [
+        {
+            path: 'public/js/'
+          , fileNames: [
+                'json2'
+              , 'plugins'
+              , 'underscore'
+              , 'backbone'
+              , 'templates'
+              , 'jquery.imagesloaded'
+              , 'jquery.autogrow'
+              , 'betable-browser-sdk'
+              , 'chai'
+            ]
+          , ext: '.js'
+        }
+      , {
+            path: 'app/module/bootstrap/js'
+          , fileNames: [
+    //            'bootstrap-transition'
+    //          , 'bootstrap-alert'
+                'bootstrap-modal'
+    //          , 'bootstrap-dropdown'
+    //          , 'bootstrap-scrollspy'
+    //          , 'bootstrap-tab'
+    //          , 'bootstrap-tooltip'
+    //          , 'bootstrap-popover'
+    //          , 'bootstrap-button'
+    //          , 'bootstrap-collapse'
+    //          , 'bootstrap-carousel'
+    //          , 'bootstrap-typeahead'
+            ]
+          , ext: '.js'
+        }
+      , {
+            path: 'app/module/layout/client'
+          , fileNames: ['start', 'LayoutView', 'BasePage']
+          , ext: '.js'
+        }
+      , {
+            path: 'app/module/game/client'
+          , fileNames: ['GameRouter', 'GameModel', 'GameView']
+          , ext: '.js'
+        }
+      , {
+            path: 'app/module/layout/client'
+          , fileNames: ['end']
+          , ext: '.js'
+        }
+      , {
+            path: 'app/module/game/client'
+          , fileNames: ['test/GameModelTest']
+          , ext: '.js'
+        }
+    ]
 };
 
 var _toPrettyJSON = function (temp) {

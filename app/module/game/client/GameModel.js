@@ -1,5 +1,6 @@
 var PDGame = app.Model.PDGame = Backbone.Model.extend({
     initialize: function () {
+console.log(JSON.stringify(arguments));
         this._myWinnings = 0;
         this._friendWinnings = 0;
     }
