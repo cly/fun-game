@@ -1,6 +1,7 @@
 var _ = require('underscore')
   , path = require('path')
   , util = require('util')
+  , async = require('async')
   , app = require('')
   , config = app.getConfig()
   , BasicUser = require('user/model/BasicUser')
@@ -24,12 +25,17 @@ util.inherits(Module, BaseTemplateLocalService);
 
 // Prototype
 //----------------------------------------------------------------------------------------------------------------------
+Module.prototype.getBetableConfig = function (gameName) {
+    var games = config.getBetableOAUTHSettings();
+    var game = games[gameName];
+    return game;
+};
+
 Module.prototype.getBetableSDK = function (gameName) {
     if (_betableSDKs[gameName]) {
         return _betableSDKs[gameName];
     } else {
-        var games = config.getBetableOAUTHSettings();
-        var game = games[gameName];
+        var game = this.getBetableConfig(gameName);
         if (game) {
             var sdk = new Betable(game);
             _betableSDKs[gameName] = sdk;
@@ -49,35 +55,48 @@ Module.prototype.hasBetableSDK = function (gameName) {
     }
 };
 
-Module.prototype.getLayout = function (req, cb) {
+Module.prototype.getLayout = function (pdCooperateAccessToken, pdBetrayAccessToken, cb) {
     var self = this;
-    if (!req.session || !req.session.accessToken) {
-        return cb('no betable access token');
+    if (!pdCooperateAccessToken || !pdBetrayAccessToken) {
+        return cb('not enough betable access tokens');
     }
-    Betable.get(BETABLE_USER_FIELDS, req.session.accessToken, function (e, betableUser) {
-        if (e) {
-            return cb(e);
-        } else {
-            var clientSession = self.toClientSession(betableUser, req.session.accessToken);
+    if (this.hasBetableSDK('pdCooperate') && this.hasBetableSDK('pdBetray')) {
+        async.parallel(
+            {
+                cooperate: function (cb) {
+                    self.getBetableSDK('pdCooperate').get(BETABLE_USER_FIELDS, pdCooperateAccessToken, cb);
+                }
+              , betray: function (cb) {
+                    self.getBetableSDK('pdBetray').get(BETABLE_USER_FIELDS, pdBetrayAccessToken, cb);
+                }
+            }
+          , function (e, d) {
+                if (e) {
+                    return cb('error');
+                } else {
+                    var betable = {};
+                    betable.betray = {};
+                    betable.betray.user = d.betray;
+                    betable.betray.accessToken = pdBetrayAccessToken;
+                    betable.betray.name = self.getBetableConfig('pdBetray').name;
+                    betable.betray.gameId = self.getBetableConfig('pdBetray').id;
 
-            var params = {
-                config: config
-              , clientJSFileNames: DeployLocalService.getClientJSFileNames()
-              , clientSession: JSON.stringify(clientSession)
-            };
-            return cb(null, self.renderTemplate(params));
-        }
-    });
-};
-
-Module.prototype.toClientSession = function (betableUser, betableAccessToken) {
-    var betable = {};
-    betable.user = betableUser;
-    betable.accessToken = betableAccessToken;
-    betable.gameId = config.getBetableGameId();
-    return {
-        betable: betable
-    };
+                    betable.cooperate = {};
+                    betable.cooperate.user = d.cooperate;
+                    betable.cooperate.accessToken = pdCooperateAccessToken;
+                    betable.cooperate.name = self.getBetableConfig('pdCooperate').name;
+                    betable.cooperate.gameId = self.getBetableConfig('pdCooperate').id;
+                    
+                    var params = {
+                        config: config
+                      , clientJSFileNames: DeployLocalService.getClientJSFileNames()
+                      , clientSession: JSON.stringify({betable: betable})
+                    };
+                    return cb(null, self.renderTemplate(params));
+                }
+            }
+        );
+    }
 };
 
 var instance = new Module();

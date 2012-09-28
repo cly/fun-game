@@ -42,6 +42,7 @@ Module.prototype.betableOAUTHCallback = function (req, res, next) {
         return res.send('we got an error', req.query.error)
     }
 
+    // Handle both potential game oauth states.
     if (req.session.pdCooperateState) {
         delete req.session.pdCooperateState;
         if (LayoutLocalService.hasBetableSDK('pdCooperate')) {
@@ -53,6 +54,8 @@ Module.prototype.betableOAUTHCallback = function (req, res, next) {
                 req.session.pdCooperateAccessToken = accessToken;
                 return res.redirect(config.getHostName());
             });
+        } else {
+            return res.send('we could not find sdk', req.query.error)
         }
     } else if (req.session.pdBetrayState) {
         delete req.session.pdBetrayState;
@@ -65,13 +68,14 @@ Module.prototype.betableOAUTHCallback = function (req, res, next) {
                 req.session.pdBetrayAccessToken = accessToken;
                 return res.redirect(config.getHostName());
             });
+        } else {
+            return res.send('we could not find sdk', req.query.error)
         }
     }
-    return res.send('we could not find sdk', req.query.error)
 };
 
 Module.prototype.layout = function (req, res, next) {
-    // TODO: This should be an attribute of an user object.
+    // Ugly but gets two tokens.
     if (!req.session.pdCooperateAccessToken) {
         // Go to oauth flow.
         req.session.pdCooperateState = Math.floor(Math.random() * 1100000000000).toString();
@@ -82,7 +86,7 @@ Module.prototype.layout = function (req, res, next) {
         return LayoutLocalService.getBetableSDK('pdBetray').authorize(res, req.session.pdBetrayState);
     } else {
         // Have oauth tokens!
-        LayoutLocalService.getLayout(req, function (e, d) {
+        LayoutLocalService.getLayout(req.session.pdCooperateAccessToken, req.session.pdBetrayAccessToken, function (e, d) {
             if (e) {
                 return res.send({error: e}, 400);
             } else {
