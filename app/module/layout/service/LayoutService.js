@@ -22,7 +22,7 @@ util.inherits(Module, BaseService);
 Module.prototype.attachRoutes = function () {
     // HTML Routes.
     this.server.get('/', _(this.layout).bind(this));
-    this.server.get('/:ownerId', _(this.layout).bind(this));
+    this.server.get('/game/:id', _(this.layout).bind(this));
     this.server.get(config.getApiUrl('misc/routes'), _(this.readListRoutes).bind(this));
     this.server.get(config.getApiUrl('oauth2.0-redirect/betable'), _(this.betableOAUTHCallback).bind(this));
 };

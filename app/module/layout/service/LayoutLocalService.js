@@ -45,10 +45,13 @@ Module.prototype.getLayout = function (req, cb) {
 };
 
 Module.prototype.toClientSession = function (betableUser, betableAccessToken) {
-    var result = {};
-    betableUser.accessToken = betableAccessToken;
-    result.betableUser = betableUser;
-    return result;
+    var betable = {};
+    betable.user = betableUser;
+    betable.accessToken = betableAccessToken;
+    betable.gameId = config.getBetableGameId();
+    return {
+        betable: betable
+    };
 };
 
 var instance = new Module();
