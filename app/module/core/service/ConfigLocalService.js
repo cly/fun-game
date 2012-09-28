@@ -96,9 +96,7 @@ _configs.base = {
   , 'process.env.NODE_PATH': 'derived'
   , 'server.port': 8080
   , 'server.routes.fileNames': [ 
-        'user/service/UserService'
-      , 'game/service/GameService'
-      , 'layout/service/LayoutService'
+        'layout/service/LayoutService'
     ]
   , 'session.key': 'sid'
   , 'session.secret': 'asdfwerwer'
