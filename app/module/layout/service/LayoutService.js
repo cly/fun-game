@@ -4,7 +4,6 @@ var _ = require('underscore')
   , config = app.getConfig()
   , BaseService = require('core/service/BaseService')
   , Betable = require('betable-oauth-node-sdk')(config.getBetableOAUTHSettings())
-  , LayoutLocalService = require('layout/service/LayoutLocalService')
 ;
 
 // Constants
@@ -79,5 +78,6 @@ Module.prototype.readListRoutes = function (req, res, next) {
 var instance = new Module();
 module.exports = instance;
 
-var RouterLocalService = require('core/service/RouterLocalService')
+var LayoutLocalService = require('layout/service/LayoutLocalService')
+  , RouterLocalService = require('core/service/RouterLocalService')
 ;

@@ -50,12 +50,17 @@ _configs.base = {
         }
       , {
             path: 'app/module/layout/client'
-          , fileNames: ['start', 'MiscModel', 'MiscView', 'LayoutView', 'BasePage']
+          , fileNames: ['start', 'MiscModel', 'LayoutView', 'BasePage']
           , ext: '.js'
         }
       , {
             path: 'app/module/user/client'
           , fileNames: ['UserRouter', 'UserModel', 'UserView']
+          , ext: '.js'
+        }
+      , {
+            path: 'app/module/game/client'
+          , fileNames: ['GameRouter', 'GameModel', 'GameView']
           , ext: '.js'
         }
       , {
@@ -70,6 +75,11 @@ _configs.base = {
           , fileNames: ['user'] 
           , ext: '.html' 
         } 
+      , { 
+            path: 'app/module/game/template' 
+          , fileNames: ['game'] 
+          , ext: '.html' 
+        } 
     ] 
   , 'exitCode': 100
   , 'facebook.appId': '313282792072364'
@@ -81,6 +91,7 @@ _configs.base = {
   , 'server.port': 8080
   , 'server.routes.fileNames': [ 
         'user/service/UserService'
+      , 'game/service/GameService'
       , 'layout/service/LayoutService'
     ]
   , 'session.key': 'sid'

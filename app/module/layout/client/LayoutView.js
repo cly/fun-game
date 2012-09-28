@@ -26,9 +26,6 @@ app.View.Layout = Backbone.View.extend({
         // Sessions.
         this.session = new app.Model.Session(app.session);
         var user = this.session.getUser();
-        if (user.isNewUser()) {
-            var modal = new app.View.SignupModal({model: user, layout: this});
-        }
 
         // Routes
         this.$el.on('click', 'a', $.proxy(this.onAnchorClick, this));
@@ -36,8 +33,7 @@ app.View.Layout = Backbone.View.extend({
         // Initialize singletons.
         this.router = {};
         this.router.user = new app.Router.User();
-        this.scroll = new app.Model.Scroll();
-        this.db = new app.Model.Database();
+        this.router.game = new app.Router.Game();
 
         // TODO. add config data into the session.
         // Debugging.
