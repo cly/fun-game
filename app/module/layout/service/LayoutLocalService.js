@@ -6,13 +6,14 @@ var _ = require('underscore')
   , BasicUser = require('user/model/BasicUser')
   , BaseTemplateLocalService = require('core/service/BaseTemplateLocalService')
   , DeployLocalService = require('core/service/DeployLocalService')
-  , Betable = require('betable-oauth-node-sdk')(config.getBetableOAUTHSettings())
+  , Betable = require('betable-oauth-node-sdk')
 ;
 
 // Private
 //----------------------------------------------------------------------------------------------------------------------
 var _templateFileName = path.join(__dirname, '../template/layout.html');
 var BETABLE_USER_FIELDS = ['account', 'wallet'];
+var _betableSDKs = {};
 
 // Constructor
 //----------------------------------------------------------------------------------------------------------------------
@@ -23,6 +24,31 @@ util.inherits(Module, BaseTemplateLocalService);
 
 // Prototype
 //----------------------------------------------------------------------------------------------------------------------
+Module.prototype.getBetableSDK = function (gameName) {
+    if (_betableSDKs[gameName]) {
+        return _betableSDKs[gameName];
+    } else {
+        var games = config.getBetableOAUTHSettings();
+        var game = games[gameName];
+        if (game) {
+            var sdk = new Betable(game);
+            _betableSDKs[gameName] = sdk;
+            return sdk;
+        } else {
+            return null;
+        }
+    }
+};
+
+Module.prototype.hasBetableSDK = function (gameName) {
+    var sdk = this.getBetableSDK(gameName);
+    if (sdk) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
 Module.prototype.getLayout = function (req, cb) {
     var self = this;
     if (!req.session || !req.session.accessToken) {

@@ -11,9 +11,20 @@ var _configs = {};
 _configs.base = {
     'api.version': 1
   , 'api.version.rootUrl': 'derived'
-  , 'betable.gameId': 'F8LGgpw1nequm_vl_d8hAf'
-  , 'betable.APIKey': 'mgqZ3FYtujUvSIfN9KJgjWbyqHbz7tRD'
-  , 'betable.APISecret': 'BnZirQPYesyaxTOwlmrEZ2iaV1iupLHt'
+  , 'betable.games': [
+        {
+            name: 'pdCooperate'
+          , id: 'PBa90YJmAGp1ZCLV24-Ndz'
+          , APIKey: 'Gkv3abVHZ2OSIR5DiNGGmbXvcJJPBvTy'
+          , APISecret: 'upDmxJgqAytyzCXUbZEmQ37A9gfqNXAT'
+        }
+      , {
+            name: 'pdBetray'
+          , id: 'jdRH0nSS2l47-NmjXC1TI6'
+          , APIKey: 'TryOmpAoeD53TFyTpo1YLbbTOpJNX5i3'
+          , APISecret: 'cPznt3eVwVX8zsz44it2w2NAxyW5ZLGI'
+        }
+    ]
   , 'betable.OAUTHRedirectPath': 'oauth2.0-redirect/betable'
   , 'client.js.fileNames': [
         {
@@ -179,18 +190,22 @@ Module.prototype.getApiUrl = function () {
 Module.prototype.getCwd = function () {return this._config.cwd;};
 Module.prototype.getClientJSFileNames = function () {return this._config.client.js.fileNames;};
 Module.prototype.getClientTemplateFileNames = function () {return this._config.client.template.fileNames;};
-Module.prototype.getBetableGameId = function () {return this._config.betable.gameId;};
-Module.prototype.getBetableAPIKey = function () {return this._config.betable.APIKey;};
-Module.prototype.getBetableAPISecret = function () {return this._config.betable.APISecret;};
+Module.prototype.getBetableGames = function () {return this._config.betable.games;};
+Module.prototype.getBetableOAUTHRedirectPath = function () {return this._config.betable.OAUTHRedirectPath;};
 Module.prototype.getBetableOAUTHRedirectURI = function () {
     return this.getHostName() + this.getApiUrl(this._config.betable.OAUTHRedirectPath);
 };
 Module.prototype.getBetableOAUTHSettings = function () {
-    return {
-        apiKey: this.getBetableAPIKey()
-      , apiSecret: this.getBetableAPISecret()
-      , redirectUri: this.getBetableOAUTHRedirectURI()
-    };
+    var self = this;
+    var result = {};
+    _(this.getBetableGames()).each(function (game) {
+        result[game.name] = {
+            apiKey: game.APIKey
+          , apiSecret: game.APISecret
+          , redirectUri: self.getBetableOAUTHRedirectURI()
+        };
+    });
+    return result;
 };
 Module.prototype.getFacebookAppId = function () {return this._config.facebook.appId;};
 Module.prototype.getFacebookAppSecret = function () {return this._config.facebook.appSecret;};
