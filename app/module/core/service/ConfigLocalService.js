@@ -65,11 +65,6 @@ _configs.base = {
           , ext: '.js'
         }
       , {
-            path: 'app/module/user/client'
-          , fileNames: ['UserRouter', 'UserModel', 'UserView']
-          , ext: '.js'
-        }
-      , {
             path: 'app/module/game/client'
           , fileNames: ['GameRouter', 'GameModel', 'GameView']
           , ext: '.js'
