@@ -45,8 +45,8 @@ Module.prototype.betableOAUTHCallback = function (req, res, next) {
     // Handle both potential game oauth states.
     if (req.session.pdCooperateState) {
         delete req.session.pdCooperateState;
-        if (LayoutLocalService.hasBetableSDK('pdCooperate')) {
-            LayoutLocalService.getBetableSDK('pdCooperate').token(code, function (e, accessToken) {
+        if (GameLocalService.hasBetableSDK('pdCooperate')) {
+            GameLocalService.getBetableSDK('pdCooperate').token(code, function (e, accessToken) {
                 if (e) {
                     return res.send({error: e}, 400);
                 }
@@ -59,8 +59,8 @@ Module.prototype.betableOAUTHCallback = function (req, res, next) {
         }
     } else if (req.session.pdBetrayState) {
         delete req.session.pdBetrayState;
-        if (LayoutLocalService.hasBetableSDK('pdBetray')) {
-            LayoutLocalService.getBetableSDK('pdBetray').token(code, function (e, accessToken) {
+        if (GameLocalService.hasBetableSDK('pdBetray')) {
+            GameLocalService.getBetableSDK('pdBetray').token(code, function (e, accessToken) {
                 if (e) {
                     return res.send({error: e}, 400);
                 }
@@ -79,14 +79,14 @@ Module.prototype.layout = function (req, res, next) {
     if (!req.session.pdCooperateAccessToken) {
         // Go to oauth flow.
         req.session.pdCooperateState = Math.floor(Math.random() * 1100000000000).toString();
-        return LayoutLocalService.getBetableSDK('pdCooperate').authorize(res, req.session.pdCooperateState);
+        return GameLocalService.getBetableSDK('pdCooperate').authorize(res, req.session.pdCooperateState);
     } else if (!req.session.pdBetrayAccessToken) {
         // Go to oauth flow.
         req.session.pdBetrayState = Math.floor(Math.random() * 1100000000000).toString();
-        return LayoutLocalService.getBetableSDK('pdBetray').authorize(res, req.session.pdBetrayState);
+        return GameLocalService.getBetableSDK('pdBetray').authorize(res, req.session.pdBetrayState);
     } else {
         // Have oauth tokens!
-        LayoutLocalService.getLayout(req.session.pdCooperateAccessToken, req.session.pdBetrayAccessToken, function (e, d) {
+        GameLocalService.getLayout(req.session.pdCooperateAccessToken, req.session.pdBetrayAccessToken, function (e, d) {
             if (e) {
                 return res.send({error: e}, 400);
             } else {
@@ -103,6 +103,6 @@ Module.prototype.readListRoutes = function (req, res, next) {
 var instance = new Module();
 module.exports = instance;
 
-var LayoutLocalService = require('layout/service/LayoutLocalService')
+var GameLocalService = require('game/service/GameLocalService')
   , RouterLocalService = require('core/service/RouterLocalService')
 ;
