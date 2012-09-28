@@ -1,6 +1,6 @@
 ## main
-
-<h2>
+<div style="width:500px; margin: 50px auto">
+<h4>
 Alice and Bob has robbed the Bank of Canada of $10Million bucks :( Now, they are trying to get away!
 </br>
 
@@ -18,34 +18,36 @@ If Bob rats out Alice while Alice's silent, Bob will end up with the $2M he stas
 </br>
 If Alice and Bob both rats each other out, they will both go to jail.
 </br>
-</h2>
-
-<h1>
-Alice needs your help. What should she do?
-</h1>
-
-<h1>
-<a id="cooperate" href="/cooperate">Stay quiet</a>
 </br>
-<a id="betray" href="/betray">Rat him out!</a>
-</h1>
 
-<h3 id="results">
+Alice needs your help. What should she do? Costs $1 to play.
+
+</br>
+<a class="btn" id="cooperate" href="/cooperate">Stay quiet</a>
+</br>
+<a class="btn" id="betray" href="/betray">Rat him out!</a>
+
+<div id="results">
+<%= new Date() %>
+</br>
 <% if (game.getMyAction() == 'cooperate' && game.getFriendAction() == 'cooperate') { %>
       (+$5M) WOOT! Alice and Bob worked well together to dodge the coppers.
 <% } else if (game.getMyAction() == 'cooperate' && game.getFriendAction() == 'betray') { %>
-      Alice kept her mouth closed but Bob betrayed her :(
+      Alice kept her mouth shut but Bob betrayed her :(
 <% } else if (game.getMyAction() == 'betray' && game.getFriendAction() == 'betray') { %>
       Two rats don't make a right. Both Alice and Bob goes to jail for a long time.
 <% } else if (game.getMyAction() == 'betray' && game.getFriendAction() == 'cooperate') { %>
       (+$2M) Alice played Bob like a doll. Well done!
 <% } %>
-    <ul>
-        <li>Alice's winnings: $<%= game.getMyWinnings() %></li>
-        <li>Bob's winnings: $<%= game.getFriendWinnings() %></li>
+
+</br>
+<span class="label label-info">Alice's winnings: $<%= game.getMyWinnings() %></span>
+</br>
+<span class="label label-info">Bob's winnings: $<%= game.getFriendWinnings() %></span>
 <!--
         <li>Alice's action: <%= game.getMyAction() %></li>
         <li>Bob's action:  <%= game.getFriendAction() %></li>
 -->
-    </ul>
+</div>
 </h3>
+</h4>
