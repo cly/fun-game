@@ -61,7 +61,7 @@ _configs.base = {
         }
       , {
             path: 'app/module/layout/client'
-          , fileNames: ['start', 'MiscModel', 'LayoutView', 'BasePage']
+          , fileNames: ['start', 'LayoutView', 'BasePage']
           , ext: '.js'
         }
       , {
@@ -197,6 +197,8 @@ Module.prototype.getBetableOAUTHSettings = function () {
         result[game.name] = {
             apiKey: game.APIKey
           , apiSecret: game.APISecret
+          , name: game.name
+          , id: game.id
           , redirectUri: self.getBetableOAUTHRedirectURI()
         };
     });

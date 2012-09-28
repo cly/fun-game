@@ -1,35 +1,70 @@
-var Game = app.Model.Game = Backbone.Model.extend({
-    initialize: function () {}
-  , urlRoot: function () {return '/api/1/games';}
-  , getId: function () {return this.id;}
-});
-
-app.Collection.Games = Backbone.Collection.extend({
-    model: app.Model.Game
-});
-
-var BetableGame = app.Model.BetableGame = Backbone.Model.extend({
-    initialize: function () {}
-  , getGameId: function () {return this.option.gameId;}
-  , getAccessToken: function () {return this.option.accessToken;}
-
-});
-
-var config = __APP.session.betable;//.get('betable');
-console.log(config);
-var sdk = new Betable(config.gameId, config.accessToken);
-sdk.canIGamble(function(d) { console.log(d); });
-
-var betData = {
-    currency: 'GBP'
-  , economy: 'sandbox'
-  , wager: '1.00'
-};
-
-var onBetResponse = function (d, xhr) {
-    console.log(d);
-};
-
-sdk.bet(betData, onBetResponse, function (e) {
-    console.log(e);
+var PDGame = app.Model.PDGame = Backbone.Model.extend({
+    initialize: function () {
+        this._myWinnings = 0;
+        this._friendWinnings = 0;
+    }
+  , betData: function () {
+        return {
+            currency: 'GBP'
+          , economy: 'sandbox'
+          , wager: '1.00'
+        };
+    }
+  , betray: function () {
+        var self = this;
+        this._myAction = 'betray';
+        if (!this._betrayGame) {
+            var conf = this.get('betray');
+            var game = new Betable(conf.gameId, conf.accessToken);
+            this._betrayGame = game;
+        }
+        this._betrayGame.bet(this.betData(), function (d, xhr) {
+            self._friendAction = d.outcome;
+            self._myPayout = d.payout;
+            self._myWinnings += parseFloat(this._myPayout);
+            self._friendWinnings += parseFloat(self.getFriendPayout());
+            self.trigger('change');
+        }, function (e) {
+            console.log('error' + e);
+            self.trigger('error');
+        })
+    }
+  , cooperate: function () {
+        var self = this;
+        this._myAction = 'cooperate';
+        if (!this._cooperateGame) {
+            var conf = this.get('cooperate');
+            var game = new Betable(conf.gameId, conf.accessToken);
+            this._cooperateGame = game;
+        }
+        this._cooperateGame.bet(this.betData(), function (d, xhr) {
+            self._friendAction = d.outcome;
+            self._myPayout = d.payout;
+            self._myWinnings += parseFloat(self._myPayout);
+            self._friendWinnings += parseFloat(self.getFriendPayout());
+            self.trigger('change');
+        }, function (e) {
+            console.log('error' + e);
+            self.trigger('error');
+        })
+    }
+  , getMyWinnings: function () {return this._myWinnings;}
+  , getFriendWinnings: function () {return this._friendWinnings;}
+  , getMyAction: function () {return this._myAction;}
+  , getFriendAction: function () {return this._friendAction;}
+  , getMyPayout: function () {
+        return this._myPayout;
+    }
+  , getFriendPayout: function () {
+        var mp = this.getMyPayout();
+        if (mp == '5.00') {
+            return '0.00';
+        } else if (mp == '2.00') {
+            return '2.00';
+        } else if (mp == '0.00') {
+            return '2.00';
+        } else {
+            return '0.00';
+        }
+    }
 });

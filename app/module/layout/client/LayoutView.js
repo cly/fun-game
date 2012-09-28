@@ -23,16 +23,11 @@ app.View.Layout = Backbone.View.extend({
 
         this.$page = $('#page');
 
-        // Sessions.
-        this.session = new app.Model.Session(app.session);
-        var user = this.session.getUser();
-
         // Routes
         this.$el.on('click', 'a', $.proxy(this.onAnchorClick, this));
 
         // Initialize singletons.
         this.router = {};
-        this.router.user = new app.Router.User();
         this.router.game = new app.Router.Game();
 
         // TODO. add config data into the session.
